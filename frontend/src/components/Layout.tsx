@@ -14,7 +14,7 @@ const Layout = () => {
 
   const location = useLocation()
 
-  const title = pageTitles[location.pathname] || 'Social AI';
+  const title = pageTitles[location.pathname] || 'Post Scheduler';
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
