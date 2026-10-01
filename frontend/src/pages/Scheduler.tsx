@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { dummyPostsData, PLATFORMS } from "../assets/assets";
-import { CalendarIcon, CalendarDaysIcon, Clock, XIcon } from "lucide-react";
+import { CalendarIcon, CalendarDaysIcon, Clock, XIcon, SendIcon } from "lucide-react";
 
 const Scheduler = () => {
   const [posts, setPosts] = useState<any[]>([]);
@@ -72,10 +72,11 @@ const Scheduler = () => {
                       key={p.id}
                       type="button"
                       onClick={() => togglePlatform(p.id)}
-                      className={`flex items-center gap-1.5 p-3 rounded-md border transition-all duration-150 ${active
+                      className={`flex items-center gap-1.5 p-3 rounded-md border transition-all duration-150 ${
+                        active
                           ? "bg-red-50 border-red-300 text-red-500 scale-103"
                           : "border-slate-200 text-slate-500 hover:border-slate-300"
-                        }`}
+                      }`}
                     >
                       <p.icon className="size-4.5" />
                     </button>
@@ -98,8 +99,9 @@ const Scheduler = () => {
                 onChange={(e) => setContent(e.target.value)}
               />
               <div
-                className={`text-right text-xs mt-1 font-medium ${content.length > 270 ? "text-red-500" : "text-slate-400"
-                  }`}
+                className={`text-right text-xs mt-1 font-medium ${
+                  content.length > 270 ? "text-red-500" : "text-slate-400"
+                }`}
               >
                 {content.length}/280
               </div>
@@ -238,37 +240,98 @@ const Scheduler = () => {
           <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
             <CalendarDaysIcon className="size-4 text-zinc-500" />
             <h3 className="text-slate-900 text-sm">Upcoming</h3>
-            <span className="ml-auto text-xs font-bold bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded-full">{scheduled.length}</span>
+            <span className="ml-auto text-xs font-bold bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded-full">
+              {scheduled.length}
+            </span>
           </div>
           <div className="max-h-72 overflow-y-auto divide-y divide-slate-50">
             {scheduled.length === 0 ? (
               <div className="py-10 text-center text-slate-400 text-sm">
                 No posts scheduled yet
               </div>
-            ): (
+            ) : (
               scheduled.map((post) => (
                 <div key={post._id} className="px-5 py-4 hover:bg-slate-50/60 transition-colors">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex gap-1.5 items-center">
                       {post.platforms.map((pl: string) => {
                         const meta = PLATFORMS.find((p) => p.id === pl);
-                        return meta ? <meta.icon key={pl} className="size-3.5 text-slate-400"/>
-                       : null})}
+                        return meta ? (
+                          <meta.icon key={pl} className="size-3.5 text-slate-400" />
+                        ) : null;
+                      })}
                     </div>
-                      
-                      
 
+                    <div className="flex items-center gap-2">
+                      {post.mediaType && (
+                        <span className="text-xs bg-slate-100 border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-semibold capitalize">
+                          {post.mediaType}
+                        </span>
+                      )}
+                      <span className="text-xs text-slate-400">
+                        {new Date(post.scheduledAt).toLocaleTimeString()}
+                      </span>
+                    </div>
                   </div>
+                  <p className="text-sm text-slate-500 line-clamp-2 max-w-md">
+                    {post.content}
+                  </p>
                 </div>
               ))
             )}
+          </div>
+        </div>
 
+        {/* Published */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+            <SendIcon className="size-4 text-zinc-500" />
+            <h3 className="text-slate-900 text-sm">Published</h3>
+            <span className="ml-auto text-xs font-bold bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded-full">
+              {published.length}
+            </span>
+          </div>
+          <div className="max-h-72 overflow-y-auto divide-y divide-slate-50">
+            {published.length === 0 ? (
+              <div className="py-10 text-center text-slate-400 text-sm">
+                No published posts yet
+              </div>
+            ) : (
+              published.map((post) => (
+                <div key={post._id} className="px-5 py-4 hover:bg-slate-50/60 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex gap-1.5 items-center">
+                      {post.platforms.map((pl: string) => {
+                        const meta = PLATFORMS.find((p) => p.id === pl);
+                        return meta ? (
+                          <meta.icon key={pl} className="size-3.5 text-slate-400" />
+                        ) : null;
+                      })}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {post.mediaType && (
+                        <span className="text-xs bg-slate-100 border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-semibold capitalize">
+                          {post.mediaType}
+                        </span>
+                      )}
+                      <span className="text-xs text-slate-400">
+                        {new Date(post.updatedAt).toLocaleTimeString()}
+                      </span>
+                      <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full">
+                        Published
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-500 line-clamp-2 max-w-[80%]">
+                    {post.content}
+                  </p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
-
-      {/* published*/}
-
     </div>
   );
 };
