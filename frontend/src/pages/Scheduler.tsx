@@ -177,7 +177,7 @@ const Scheduler = () => {
                 <label className="block text-xs text-slate-500 uppercase mb-2">
                   Time
                 </label>
-                <div className="flex gap-1.5 items-center">
+                <div className="grid grid-cols-2 gap-1.5">
                   {/* Hours Dropdown */}
                   <select
                     value={selectedHour}
@@ -193,26 +193,11 @@ const Scheduler = () => {
                     ))}
                   </select>
 
-                  <span className="text-slate-400 font-bold">:</span>
-
-                  {/* Minutes Dropdown */}
-                  <select
-                    value={selectedMinute}
-                    onChange={(e) => setSelectedMinute(e.target.value)}
-                    className="w-full py-2.5 px-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm outline-none cursor-pointer text-center"
-                  >
-                    {["00", "15", "30", "45"].map((min) => (
-                      <option key={min} value={min}>
-                        {min}
-                      </option>
-                    ))}
-                  </select>
-
                   {/* Period Dropdown */}
                   <select
                     value={selectedPeriod}
                     onChange={(e) => setSelectedPeriod(e.target.value)}
-                    className="py-2.5 px-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm outline-none cursor-pointer"
+                    className="w-full py-2.5 px-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm outline-none cursor-pointer text-center"
                   >
                     <option value="AM">AM</option>
                     <option value="PM">PM</option>
