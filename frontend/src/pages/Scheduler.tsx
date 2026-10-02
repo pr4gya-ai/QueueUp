@@ -1,45 +1,45 @@
 import { useEffect, useState } from "react";
 import { dummyPostsData, PLATFORMS } from "../assets/assets";
 import { CalendarIcon, CalendarDaysIcon, Clock, XIcon, SendIcon } from "lucide-react";
-
+ 
 const Scheduler = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [content, setContent] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
-
+ 
   // States for time selection dropdowns
   const [selectedHour, setSelectedHour] = useState("12");
   const [selectedMinute, setSelectedMinute] = useState("00");
   const [selectedPeriod, setSelectedPeriod] = useState("PM");
-
+ 
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-
+ 
   const fetchPosts = async () => {
     setPosts(dummyPostsData);
   };
-
+ 
   useEffect(() => {
     (async () => await fetchPosts())();
     const interval = setInterval(async () => await fetchPosts(), 1000);
     return () => clearInterval(interval);
   }, []);
-
+ 
   // Update scheduledTime state whenever hour, minute, or period changes
   useEffect(() => {
     setScheduledTime(`${selectedHour}:${selectedMinute} ${selectedPeriod}`);
   }, [selectedHour, selectedMinute, selectedPeriod]);
-
+ 
   const scheduled = posts.filter((p) => p.status === "scheduled");
   const published = posts.filter((p) => p.status === "published");
-
+ 
   const togglePlatform = (id: string) =>
     setSelectedPlatforms((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
-
+ 
   const handleSchedule = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -48,7 +48,7 @@ const Scheduler = () => {
       setPosts((prev) => [...prev, dummyPostsData[0]]);
     }, 1000);
   };
-
+ 
   return (
     <div className="flex flex-col lg:flex-row gap-6 h-full">
     
@@ -57,7 +57,7 @@ const Scheduler = () => {
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-lg text-slate-700">Compose Post</h2>
           </div>
-
+ 
           <form className="space-y-5" onSubmit={handleSchedule}>
             {/* platform */}
             <div>
@@ -84,7 +84,7 @@ const Scheduler = () => {
                 })}
               </div>
             </div>
-
+ 
             {/* content */}
             <div>
               <label className="block text-xs text-slate-500 uppercase mb-2">
@@ -106,7 +106,7 @@ const Scheduler = () => {
                 {content.length}/280
               </div>
             </div>
-
+ 
             {/* media upload */}
             <div>
               <label className="block text-xs text-slate-500 lowercase mb-2">
@@ -127,7 +127,7 @@ const Scheduler = () => {
                       controls
                     />
                   )}
-
+ 
                   <button
                     type="button"
                     onClick={() => setMediaFile(null)}
@@ -152,7 +152,7 @@ const Scheduler = () => {
                 </label>
               )}
             </div>
-
+ 
             {/* date & time */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Date Field */}
@@ -171,7 +171,7 @@ const Scheduler = () => {
                   />
                 </div>
               </div>
-
+ 
               {/* Time Field */}
               <div>
                 <label className="block text-xs text-slate-500 uppercase mb-2">
@@ -192,7 +192,7 @@ const Scheduler = () => {
                       </option>
                     ))}
                   </select>
-
+ 
                   {/* Period Dropdown */}
                   <select
                     value={selectedPeriod}
@@ -205,19 +205,19 @@ const Scheduler = () => {
                 </div>
               </div>
             </div>
-
+ 
             {/* submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white rounded-xl text-sm font-medium transition-all disabled:opacity-50"
+              className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl text-sm font-medium transition-all disabled:opacity-50"
             >
               {loading ? "Scheduling..." : "Schedule Post"}
             </button>
           </form>
         </div>
       </div>
-
+ 
       {/* — Queue panels — */}
       <div className="flex-1 flex flex-col gap-6 min-w-0">
         {/* Upcoming */}
@@ -246,7 +246,7 @@ const Scheduler = () => {
                         ) : null;
                       })}
                     </div>
-
+ 
                     <div className="flex items-center gap-2">
                       {post.mediaType && (
                         <span className="text-xs bg-slate-100 border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-semibold capitalize">
@@ -266,7 +266,7 @@ const Scheduler = () => {
             )}
           </div>
         </div>
-
+ 
         {/* Published */}
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
@@ -293,7 +293,7 @@ const Scheduler = () => {
                         ) : null;
                       })}
                     </div>
-
+ 
                     <div className="flex items-center gap-2">
                       {post.mediaType && (
                         <span className="text-xs bg-slate-100 border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-semibold capitalize">
@@ -320,5 +320,5 @@ const Scheduler = () => {
     </div>
   );
 };
-
+ 
 export default Scheduler;

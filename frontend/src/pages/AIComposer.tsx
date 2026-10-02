@@ -1,38 +1,38 @@
 import { useEffect, useState } from "react";
 import { dummyGenerationData, PLATFORMS } from "../assets/assets";
 import { ArrowRightIcon, Loader2Icon, ImageIcon, TypeIcon, HistoryIcon, Wand2Icon, XIcon, CalendarIcon, TimerIcon } from "lucide-react";
-
+ 
 const AIComposer = () => {
   const [prompt, setPrompt] = useState("");
   const [tone, setTone] = useState("Professional");
   const [generateImage, setGenerateImage] = useState(true);
   const [loading, setLoading] = useState(false);
   const [generations, setGenerations] = useState<any[]>([]);
-
+ 
   // Scheduling state
   const [activeScheduler, setActiveScheduler] = useState<any>(null);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
   const [scheduling, setScheduling] = useState(false);
-
+ 
   // Time selection dropdowns
   const [selectedHour, setSelectedHour] = useState("12");
   const [selectedPeriod, setSelectedPeriod] = useState("PM");
-
+ 
   const fetchGenerations = async () => {
     setGenerations(dummyGenerationData);
   };
-
+ 
   useEffect(() => {
     fetchGenerations();
   }, []);
-
+ 
   // Update scheduledTime whenever hour or period changes
   useEffect(() => {
     setScheduledTime(`${selectedHour}:00 ${selectedPeriod}`);
   }, [selectedHour, selectedPeriod]);
-
+ 
   const handleGenerate = async () => {
     setLoading(true);
     setTimeout(() => {
@@ -40,7 +40,7 @@ const AIComposer = () => {
       fetchGenerations();
     }, 2000);
   };
-
+ 
   const handleSchedule = async () => {
     if (!activeScheduler) return;
     setScheduling(true);
@@ -48,7 +48,7 @@ const AIComposer = () => {
       setScheduling(false);
     }, 2000);
   }
-
+ 
   const tones = [
     "Professional",
     "Creative",
@@ -56,7 +56,7 @@ const AIComposer = () => {
     "Minimalist",
     "Excited"
   ];
-
+ 
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-20 animate-in fade-in duration-700">
       {/* Input Section */}
@@ -95,7 +95,7 @@ const AIComposer = () => {
                 Text only
               </button>
             </div>
-
+ 
             {/* Generate button */}
             <button
               onClick={handleGenerate}
@@ -116,14 +116,14 @@ const AIComposer = () => {
             </button>
           </div>
         </div>
-
+ 
         <div className="flex flex-wrap justify-center gap-2">
           {tones.map((t) => (
             <button
               key={t}
               onClick={() => setTone(t)}
               className={`px-4 py-1.5 rounded-full text-sm transition-all border ${tone === t
-                ? "bg-gradient-to-r from-red-500 to-orange-500 border-transparent text-white"
+                ? "bg-gradient-to-r from-orange-500 to-pink-500 border-transparent text-white"
                 : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
                 }`}
             >
@@ -132,7 +132,7 @@ const AIComposer = () => {
           ))}
         </div>
       </div>
-
+ 
       {/* AI generations */}
       <div className="space-y-6 pt-12 border-t border-slate-100">
         <div className="flex items-center justify-between text-slate-600">
@@ -144,7 +144,7 @@ const AIComposer = () => {
             {generations.length} total
           </span>
         </div>
-
+ 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {generations.map((gen) => (
             <div
@@ -156,15 +156,15 @@ const AIComposer = () => {
                   <span className="text-xs text-slate-400 whitespace-nowrap">
                     {new Date(gen.createdAt).toLocaleString()}
                   </span>
-                  <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full shrink-0">
+                  <span className="text-xs font-medium text-red-500 bg-red-50 px-2 py-0.5 rounded-full shrink-0">
                     {gen.tone}
                   </span>
                 </div>
-
+ 
                 <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
                   {gen.content}
                 </p>
-
+ 
                 {gen.mediaUrl && (
                   <div className="rounded-xl overflow-hidden border border-slate-50 bg-slate-50">
                     <img
@@ -174,11 +174,11 @@ const AIComposer = () => {
                     />
                   </div>
                 )}
-
+ 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setActiveScheduler(gen)}
-                    className="px-4 py-2 bg-transparent hover:bg-gradient-to-r hover:from-red-500 hover:to-orange-500 text-slate-600 hover:text-white rounded-full text-sm font-medium transition-all border border-slate-200 hover:border-transparent"
+                    className="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-full text-sm font-medium transition-all"
                   >
                     Schedule Post
                   </button>
@@ -186,7 +186,7 @@ const AIComposer = () => {
               </div>
             </div>
           ))}
-
+ 
           {generations.length === 0 && (
             <div className="col-span-full py-20 text-center space-y-2">
               <div className="size-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto text-slate-300">
@@ -199,7 +199,7 @@ const AIComposer = () => {
           )}
         </div>
       </div>
-
+ 
       {/* Schedule modal */}
       {activeScheduler && (
         <div className="fixed inset-0 min-h-screen z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
@@ -213,14 +213,14 @@ const AIComposer = () => {
                 <XIcon className="size-5" />
               </button>
             </div>
-
+ 
             <div className="flex-1 overflow-y-auto p-8 space-y-4">
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
                 <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">
                   {activeScheduler.prompt}
                 </p>
               </div>
-
+ 
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
                 <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">
                   {activeScheduler.content}
@@ -233,7 +233,7 @@ const AIComposer = () => {
                   />
                 )}
               </div>
-
+ 
               <div className="p-8 bg-slate-50/50 border-t border-slate-50 space-y-8">
                 {/* options */}
                 <div className="space-y-6">
@@ -264,7 +264,7 @@ const AIComposer = () => {
                     })}
                   </div>
                 </div>
-
+ 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Date Field */}
                   <div className="relative">
@@ -276,7 +276,7 @@ const AIComposer = () => {
                       onChange={(e) => setScheduledDate(e.target.value)}
                     />
                   </div>
-
+ 
                   {/* Time Field */}
                   <div className="grid grid-cols-2 gap-2">
                     <select
@@ -292,7 +292,7 @@ const AIComposer = () => {
                         </option>
                       ))}
                     </select>
-
+ 
                     <select
                       value={selectedPeriod}
                       onChange={(e) => setSelectedPeriod(e.target.value)}
@@ -304,12 +304,12 @@ const AIComposer = () => {
                   </div>
                 </div>
               </div>
-
-              <button onClick={handleSchedule} className="w-full flex items-center justify-center gap-2 py-3 rounded-md bg-slate-200 text-slate-700 hover:bg-red-500 hover:text-white transition">
+ 
+              <button onClick={handleSchedule} className="flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-orange-500 to-pink-500 px-5 py-2.5 font-medium text-white transition-all hover:from-orange-600 hover:to-pink-600">
                 {scheduling ? <Loader2Icon className="size-4 animate-spin" /> : <TimerIcon className="size-4" />}
                 Schedule Post
               </button>
-
+ 
             </div>
           </div>
         </div>
@@ -317,5 +317,5 @@ const AIComposer = () => {
     </div>
   );
 };
-
+ 
 export default AIComposer;
