@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { dummyGenerationData } from "../assets/assets";
-import { ArrowRightIcon, Loader2Icon, ImageIcon, TypeIcon, HistoryIcon } from "lucide-react";
+import { dummyGenerationData, PLATFORMS } from "../assets/assets";
+import { ArrowRightIcon, Loader2Icon, ImageIcon, TypeIcon, HistoryIcon, Wand2Icon, XIcon, CalendarIcon, TimerIcon } from "lucide-react";
 
 const AIComposer = () => {
   const [prompt, setPrompt] = useState("");
@@ -16,6 +16,10 @@ const AIComposer = () => {
   const [scheduledTime, setScheduledTime] = useState("");
   const [scheduling, setScheduling] = useState(false);
 
+  // Time selection dropdowns
+  const [selectedHour, setSelectedHour] = useState("12");
+  const [selectedPeriod, setSelectedPeriod] = useState("PM");
+
   const fetchGenerations = async () => {
     setGenerations(dummyGenerationData);
   };
@@ -24,6 +28,11 @@ const AIComposer = () => {
     fetchGenerations();
   }, []);
 
+  // Update scheduledTime whenever hour or period changes
+  useEffect(() => {
+    setScheduledTime(`${selectedHour}:00 ${selectedPeriod}`);
+  }, [selectedHour, selectedPeriod]);
+
   const handleGenerate = async () => {
     setLoading(true);
     setTimeout(() => {
@@ -31,6 +40,14 @@ const AIComposer = () => {
       fetchGenerations();
     }, 2000);
   };
+
+  const handleSchedule = async () => {
+    if (!activeScheduler) return;
+    setScheduling(true);
+    setTimeout(() => {
+      setScheduling(false);
+    }, 2000);
+  }
 
   const tones = [
     "Professional",
@@ -58,11 +75,10 @@ const AIComposer = () => {
               <button
                 type="button"
                 onClick={() => setGenerateImage(true)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  generateImage
-                    ? "bg-white text-red-600 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${generateImage
+                  ? "bg-white text-red-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+                  }`}
               >
                 <ImageIcon className="size-3.5" />
                 With image
@@ -70,11 +86,10 @@ const AIComposer = () => {
               <button
                 type="button"
                 onClick={() => setGenerateImage(false)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  !generateImage
-                    ? "bg-white text-red-600 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${!generateImage
+                  ? "bg-white text-red-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+                  }`}
               >
                 <TypeIcon className="size-3.5" />
                 Text only
@@ -107,11 +122,10 @@ const AIComposer = () => {
             <button
               key={t}
               onClick={() => setTone(t)}
-              className={`px-4 py-1.5 rounded-full text-sm transition-all border ${
-                tone === t
-                  ? "bg-gradient-to-r from-red-500 to-orange-500 border-transparent text-white"
-                  : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
-              }`}
+              className={`px-4 py-1.5 rounded-full text-sm transition-all border ${tone === t
+                ? "bg-gradient-to-r from-red-500 to-orange-500 border-transparent text-white"
+                : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+                }`}
             >
               {t}
             </button>
@@ -138,8 +152,6 @@ const AIComposer = () => {
               className="group bg-white rounded-2xl border border-slate-100 p-5 hover:border-red-200 transition-all relative overflow-hidden"
             >
               <div className="flex flex-col h-full space-y-4">
-
-
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs text-slate-400 whitespace-nowrap">
                     {new Date(gen.createdAt).toLocaleString()}
@@ -152,13 +164,156 @@ const AIComposer = () => {
                 <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
                   {gen.content}
                 </p>
+
+                {gen.mediaUrl && (
+                  <div className="rounded-xl overflow-hidden border border-slate-50 bg-slate-50">
+                    <img
+                      src={gen.mediaUrl}
+                      alt="Generated media"
+                      className="w-full h-full aspect-video object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                    />
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActiveScheduler(gen)}
+                    className="px-4 py-2 bg-transparent hover:bg-gradient-to-r hover:from-red-500 hover:to-orange-500 text-slate-600 hover:text-white rounded-full text-sm font-medium transition-all border border-slate-200 hover:border-transparent"
+                  >
+                    Schedule Post
+                  </button>
+                </div>
               </div>
             </div>
           ))}
+
+          {generations.length === 0 && (
+            <div className="col-span-full py-20 text-center space-y-2">
+              <div className="size-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto text-slate-300">
+                <Wand2Icon className="size-6" />
+              </div>
+              <p className="text-slate-400 text-sm">
+                No generations yet. Start by entering a prompt above and clicking "Generate".
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Schedule modal */}
+      {activeScheduler && (
+        <div className="fixed inset-0 min-h-screen z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/30">
+              <h3 className="text-lg font-semibold text-slate-800">Schedule Generation</h3>
+              <button
+                onClick={() => setActiveScheduler(null)}
+                className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+              >
+                <XIcon className="size-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 space-y-4">
+              <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
+                <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">
+                  {activeScheduler.prompt}
+                </p>
+              </div>
+
+              <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
+                <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">
+                  {activeScheduler.content}
+                </p>
+                {activeScheduler.mediaUrl && (
+                  <img
+                    src={activeScheduler.mediaUrl}
+                    alt="Generated content"
+                    className="w-full aspect-video object-cover rounded-xl border border-slate-200 shadow-sm"
+                  />
+                )}
+              </div>
+
+              <div className="p-8 bg-slate-50/50 border-t border-slate-50 space-y-8">
+                {/* options */}
+                <div className="space-y-6">
+                  <label className="block text-[11px] text-slate-500 uppercase tracking-wide mb-3">
+                    Select Accounts
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {PLATFORMS.map((p) => {
+                      const active = selectedPlatforms.includes(p.id);
+                      return (
+                        <button
+                          key={p.id}
+                          onClick={() =>
+                            setSelectedPlatforms((prev) =>
+                              prev.includes(p.id)
+                                ? prev.filter((x) => x !== p.id)
+                                : [...prev, p.id]
+                            )
+                          }
+                          className={`p-2.5 rounded-md border text-xs transition-colors ${active
+                            ? "bg-red-400 border-transparent text-white"
+                            : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
+                            }`}
+                        >
+                          <p.icon className="size-4.5" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Date Field */}
+                  <div className="relative">
+                    <CalendarIcon className="size-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <input
+                      type="date"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-md text-slate-900 text-sm focus:outline-none transition-all"
+                      value={scheduledDate}
+                      onChange={(e) => setScheduledDate(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Time Field */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={selectedHour}
+                      onChange={(e) => setSelectedHour(e.target.value)}
+                      className="w-full px-3 py-3 bg-slate-50 border border-slate-100 rounded-md text-slate-900 text-sm outline-none cursor-pointer text-center"
+                    >
+                      {Array.from({ length: 12 }, (_, i) =>
+                        String(i + 1).padStart(2, "0")
+                      ).map((hour) => (
+                        <option key={hour} value={hour}>
+                          {hour}:00
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={selectedPeriod}
+                      onChange={(e) => setSelectedPeriod(e.target.value)}
+                      className="w-full px-3 py-3 bg-slate-50 border border-slate-100 rounded-md text-slate-900 text-sm outline-none cursor-pointer text-center"
+                    >
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <button onClick={handleSchedule} className="w-full flex items-center justify-center gap-2 py-3 rounded-md bg-slate-200 text-slate-700 hover:bg-red-500 hover:text-white transition">
+                {scheduling ? <Loader2Icon className="size-4 animate-spin" /> : <TimerIcon className="size-4" />}
+                Schedule Post
+              </button>
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
