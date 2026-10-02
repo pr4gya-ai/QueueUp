@@ -51,7 +51,7 @@ const Scheduler = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 h-full">
-      {/* — Compose panel — */}
+    
       <div className="w-full lg:w-[460px] shrink-0">
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
           <div className="flex items-center gap-2 mb-6">
