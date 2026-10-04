@@ -39,6 +39,7 @@ const getOrCreateZernioProfile = async (user: any): Promise<string> => {
 }
 
 // Generate OAuth authorization URL
+// starts from here
 // GET /api/auth/:platform
 export const generateAuthUrl = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
