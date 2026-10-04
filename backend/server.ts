@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction} from 'express';
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoute.js";
+import socialAuthRouter from "./routes/socialAuthRoute.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/oauth", socialAuthRouter)
 
 // Global error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
