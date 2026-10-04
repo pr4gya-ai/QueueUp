@@ -74,6 +74,7 @@ export const generateAuthUrl = async (req: AuthRequest, res: Response): Promise<
 }
 
 // sync accounts
+// zernio account validation
 export const syncAccounts = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const profileId = await getOrCreateZernioProfile(req.user);
