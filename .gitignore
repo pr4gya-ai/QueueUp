@@ -1,0 +1,15 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+*.tsbuildinfo
+
+# secrets (commit the .env.example files instead)
+.env
+.env.*
+!.env.example
+
+# logs / OS
+*.log
+.DS_Store
